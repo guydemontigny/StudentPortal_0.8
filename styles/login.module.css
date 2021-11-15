@@ -1,0 +1,33 @@
+.page {
+  text-align: center;
+}
+.title {
+  color: black;
+  text-align: center;
+  border: 5px solid lightgray;
+  border-radius: 10px;
+  margin: 20px 0px 20px;
+}
+.center {
+  color: black;
+  text-align: center;
+  width: 400px;
+}
+.spinner {
+  position: fixed;
+  top: 200px;
+}
+.saving {
+  position: fixed;
+  top: 200px;
+  background-color: cornflowerblue;
+}
+.error {
+  color:red;
+}
+.body {
+  margin: 0px 20px;
+}
+.indented {
+  margin: 0px 30px;
+}
