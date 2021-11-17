@@ -18,7 +18,7 @@ const LoginNavBar = ({props})=> {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto" >
-                <Nav.Link href="" onClick={() => {logout(); props.setLoginStatus("Logout")}}>{T.Quit}</Nav.Link>
+                <Nav.Link href="" onClick={() => logout()}>{T.Quit}</Nav.Link>
                 <LanguageNavDropDown props = {props} />
             </Nav>
         </Navbar.Collapse>

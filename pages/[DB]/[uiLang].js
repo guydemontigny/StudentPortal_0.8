@@ -1,9 +1,9 @@
 import {getStaticInfo} from '../../libs/getStaticInfo'
-import Opportunities from '../../components/Opportunities'
+import CentersList from '../../components/CentersList'
 import Availability from '../../components/Availability'
 import Skills from '../../components/Skills'
 import {getCredentials, saveCredentials, saveDB, saveLocale, saveStudent, saveSkills, getCurrentTab, saveCurrentTab, 
-    saveCenterOpportunities, saveLocation, saveWasModified, saveStudentAvailability, getWasModifiedColor} from '../../libs/sessionStorage'
+    saveCenterOpportunities, getLocation, saveLocation, saveWasModified, saveStudentAvailability, getWasModifiedColor} from '../../libs/sessionStorage'
 import Login from '../../components/Login'
 import {apiUrl} from '../../appConfigs/config'
 import useSWR from "swr";
@@ -14,12 +14,14 @@ import React, { useState, useEffect } from 'react';
 import {Nav, Navbar, NavDropdown} from 'react-bootstrap'
 import { showPortalSpinner } from '../../libs/system'
 import PortalSpinner from '../../components/PortalSpinner'
+//import { SSRProvider } from '@restart/ui/ssr'
 
 
 export default function App(props) {
     const [currentTab, setCurrentTab] = useState(getCurrentTab())
     const [expanded, setExpanded] = useState(false)
     const [fileMenuColor, setFileMenuColor] = useState(getWasModifiedColor())
+    const [center, setCenter] = useState(getLocation())
 
     useEffect(() => {
         showPortalSpinner(false)
@@ -67,11 +69,12 @@ export default function App(props) {
     }
 
     if (getCredentials().error){
-        return <Login props = {props} />
-    }
+        return( 
+            <Login props = {props}/>)
+        }
     const T = props.T
     return(
-      <div>
+        <div>
         <div className="row">
             <div className="col-md-12">
                 <Navbar bg="dark" variant="dark" sticky="top" expanded = {expanded} expand='sm' >
@@ -113,6 +116,14 @@ export default function App(props) {
                                 {T.Logout}
                                 </NavDropdown.Item>
                         </NavDropdown>)
+                        <Nav.Link href="" active={getCurrentTab() === 'service2centers'} 
+                            onClick={() => {
+                                setExpanded(false)
+                                setCurrentTab("service2centers")
+                                saveCurrentTab("service2centers")
+                                }}>
+                            {T.Service2centers
+                            }</Nav.Link>
                         <Nav.Link href="" active={getCurrentTab() === 'skills'}
                             onClick={() => {
                                 setExpanded(false)
@@ -121,14 +132,6 @@ export default function App(props) {
                                 }}>
                             {T.Skills}
                             </Nav.Link>
-                        <Nav.Link href="" active={getCurrentTab() === 'opportunities'} 
-                            onClick={() => {
-                                setExpanded(false)
-                                setCurrentTab("opportunities")
-                                saveCurrentTab("opportunities")
-                                }}>
-                            {T.Opportunities
-                            }</Nav.Link>
                         <Nav.Link href="" active={getCurrentTab() === 'availability'} 
                             onClick={() => {
                                 setExpanded(false)
@@ -141,8 +144,8 @@ export default function App(props) {
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
+                {(getCurrentTab() === 'service2centers') && <CentersList props = {{...props, center, setCenter, setFileMenuColor}}/>}
                 {(getCurrentTab() === 'skills') && <Skills props = {{...props, setFileMenuColor}} />}
-                {(getCurrentTab() === 'opportunities') && <Opportunities props = {{...props, setFileMenuColor}}/>}
                 {(getCurrentTab() === 'availability') && <Availability props = {{...props, setFileMenuColor}}/>}
                 {(currentTab === 'save' || currentTab === 'saveAndExit') && <SaveAllToDR props = {{...props, setFileMenuColor, currentTab, setCurrentTab}}/>}
             </div>

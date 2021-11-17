@@ -5,6 +5,7 @@ import styles from '../styles/login.module.css'
 import {useState, useEffect} from 'react'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import CentersList from './CentersList'
 
 const Availability = ({props}) => {
     const T = props.T
@@ -58,6 +59,7 @@ const Availability = ({props}) => {
 
     return(
         <div>
+          <CentersList props={{...props, center, setCenter}} />
           {center.locationId && 
             <>
             <Form.Group  className={styles.body} controlId="not-available" >

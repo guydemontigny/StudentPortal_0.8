@@ -1,11 +1,10 @@
 import styles from '../styles/login.module.css'
-import Center from 'react-center'
-import {getCredentials, saveCredentials} from '../libs/sessionStorage'
-import {resendDRCode} from '../libs/DRCodeManagement'
+import Center from 'react-center';
+import {getCredentials, saveCredentials} from '../libs/sessionStorage';
+import {resendDRCode} from '../libs/DRCodeManagement';
 import PagesContainer from '../components/PagesContainer'
 import LoginNavBar from '../components/LoginNavBar'
-import { showPortalSpinner } from '../libs/system'
-import {Button} from 'react-bootstrap'
+import { showPortalSpinner } from '../libs/system';
 
 function Login({props}) {
     const T = props.T
@@ -37,34 +36,27 @@ function Login({props}) {
     //
     if (errCode === "ERR020") {
         return (
-        <div>
-        <PagesContainer T={props.T}/>
-            <div className="row">
-            <div className="col-md-12">
-            <Center >
-                <div className={styles.center}>
-                    <form className={styles.center}>
-                        <div>
-                            <br/>
-                            <br/>{T.LogoutMsg}
-                        </div>
-                        <div>
-                            <br/><br/>
-                            <Button id="btn-return-to-login-id" 
-                                type = "submit"
-                                onClick = {()=>{
-                                    const credentials=getCredentials() 
-                                    credentials.error = "ERR000"
-                                    saveCredentials(credentials)}}>
-                                {T.ReturnToLogin}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
-            </Center>
+            <div>
+                <PagesContainer T={props.T}/>
+                <Center >
+                    <div className={styles.center}>
+                        <form className={styles.center}>
+                            <div>
+                                <br/>
+                                <br/>{T.LogoutMsg}
+                            </div>
+                            <div>
+                                <br/><br/>
+                                <button id="btn-return-to-login-id" 
+                                    onClick = {()=>{const credentials=getCredentials(); credentials.error = "ERR000"; saveCredentials(credentials)}}
+                                    className={styles.button}>
+                                        {T.ReturnToLogin}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </Center>
             </div>
-            </div>
-        </div>
         )
     }
 
@@ -106,12 +98,11 @@ function Login({props}) {
                         </div>
                         <div>
                             <br/><br/>
-                            <Button id="btn-submit-id" 
+                            <button id="btn-submit-id" 
                                 onClick = {()=>{showPortalSpinner(false)}}
-                                type = "submit"
                                 className={styles.button}>
                                     {T.Submit}
-                            </Button>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -128,7 +119,7 @@ function Login({props}) {
     let errorMessage = T[errorCode]
     if (errorCode === "ERR011") {errorMessage = credentialsReturned.code + ': ' + errorMessage}
     if (credentialsReturned.code === "resent"){ errorMessage = T.ResentCode}
-    //credentialsReturned.error = "ERR011 Code is not valid"
+    credentialsReturned.error = "ERR011 Code is not valid"
     saveCredentials(credentialsReturned);
     return( 
       <div>
@@ -147,23 +138,17 @@ function Login({props}) {
                             <br/>
                             <div className="input-group"  >
                                 <div className={styles.center} >
-                                    <input type="text" 
-                                        onChange={handleCodeChange} 
-                                        id="code-input-id" 
-                                        placeholder={T.Code2} 
-                                        autoFocus="autofocus"/>
-                                    &nbsp;
-                                    <Button className={styles.button} 
-                                        type = "submit"
-                                        onClick={ () => {
-                                            showPortalSpinner(true);
-                                            const credentials = getCredentials(); 
-                                            credentials.code = document.getElementById("code-input-id").value; 
-                                            saveCredentials(credentials);
-    //                                        window.location.reload(false);
-                                        }}>
-                                        {T.Submit}
-                                    </Button>
+                                <button  
+                                    className={styles.button} 
+                                    id = "resendbtn-id"
+                                    onClick={resendDRCode}>
+                                        {T.ResendCode}
+                                </button>
+                                <input type="text" 
+                                    onChange={handleCodeChange} 
+                                    id="code-input-id" 
+                                    placeholder={T.Code2} 
+                                    autoFocus="autofocus"/>
                                 </div>
                             </div>
                         </label>
@@ -173,12 +158,17 @@ function Login({props}) {
                         </div>
                         <div>
                             <br/><br/>
-                            <Button  
-                                    className={styles.button} 
-                                    id = "resendbtn-id"
-                                    onClick={resendDRCode}>
-                                        {T.ResendCode}
-                                </Button>
+                            <button className={styles.button} 
+                                    type = "submit"
+                                    onClick={ () => {
+                                        showPortalSpinner(true);
+                                        const credentials = getCredentials(); 
+                                        credentials.code = document.getElementById("code-input-id").value; 
+                                        saveCredentials(credentials);
+//                                        window.location.reload(false);
+                                    }}>
+                                {T.Submit}
+                            </button>
                         </div>
                     </form>
                     </div>

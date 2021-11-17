@@ -12,7 +12,7 @@ const PortalSpinner = () => {
             variant="secondary" 
             role="status" 
             hidden={true}>
-                <span className="sr-only">Loading...</span>
+                <span className="sr-only"></span>
         </Spinner> 
       </Center>
     )

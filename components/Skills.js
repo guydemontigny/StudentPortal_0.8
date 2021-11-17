@@ -21,7 +21,7 @@ const Skills = ({props}) => {
                                         saveWasModified(true)
                                         props.setFileMenuColor(getWasModifiedColor())
                                         }}>
-                <ToggleButton value={3} key={skillItem[0] + "3"} variant = {"outline-info"} onClick={() => {setSkillValue(skillCategory[0], skillItem[0], 2)}} >{T.Professional}</ToggleButton>{' '}
+                <ToggleButton value={3} key={skillItem[0] + "3"} variant = {"outline-info"} onClick={() => {setSkillValue(skillCategory[0], skillItem[0], 3)}} >{T.Professional}</ToggleButton>{' '}
                 <ToggleButton value={2} key={skillItem[0] + "2"} variant = {"outline-info"} onClick={() => {setSkillValue(skillCategory[0], skillItem[0], 2)}} >{T.Experienced}</ToggleButton>{' '}
                 <ToggleButton value={1} key={skillItem[0] + "1"} variant = {"outline-info"} onClick={() => {setSkillValue(skillCategory[0], skillItem[0], 1)}} >{T.ICanLearn}</ToggleButton>{' '}
                 &ensp;
