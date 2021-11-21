@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { getCenterOpportunities, getCredentials, getCurrentTab, getSkills, 
-    saveWasModified, getWasModifiedColor} from '../libs/sessionStorage'
+import { getCredentials, getCurrentTab, getSkills, 
+    saveWasModified, getWasModifiedColor, getLocations,
+    getStudentAvailabilities} from '../libs/sessionStorage'
 import {apiUrl} from '../appConfigs/config'
 import {getDB} from '../libs/sessionStorage'
 import { logout } from '../libs/DRCodeManagement'
@@ -9,20 +10,20 @@ import Center from 'react-center'
 import Fade from 'react-reveal/Fade'
 
 const SaveAllToDR = ({props}) => {
-    const [errorMessageSaveStudentLocationService, setErrorMessageSaveStudentLocationService] = useState(null);
-    const [errorMessageSaveStudentServiceOpportunities, setErrorMessageSaveStudentServiceOpportunities] = useState(null);
+    const [errorMessageSaveStudentLocations, setErrorMessageSaveStudentLocations] = useState(null);
+    const [errorMessageSaveStudentAvailabilities, setErrorMessageSaveStudentAvailabilities] = useState(null);
     const [errorMessageSaveStudentSkills, setErrorMessageSaveStudentSkills] = useState(null);
     const [fade, setFade] = useState(true)
     const T = props.T
     //
-    // *** SAVE STUDENT LOCATION SERVICE ***
+    // *** SAVE STUDENT LOCATIONS ***
     // 
     useEffect(() => {
         const credentials = getCredentials()
-        fetch(apiUrl(getDB()) + 'SaveStudentLocationService' + 
+        fetch(apiUrl(getDB()) + 'SaveStudentLocations' + 
                 '?code=' + credentials.code +
                 '&studentId=' + credentials.studentId +
-                '&studentAvailability=' + sessionStorage.getItem('studentAvailability'))
+                '&studentLocations=' + JSON.stringify(getLocations()))
             .then(async response => {
                 const data = await response.json()
                 // check for error response
@@ -31,38 +32,26 @@ const SaveAllToDR = ({props}) => {
                     const error = (data && data.status) || response.status;
                     return Promise.reject(error);
                 }
-                setErrorMessageSaveStudentLocationService('SaveStudentLocationService: ' + data.status);
+                setErrorMessageSaveStudentLocations('SaveStudentLocations: ' + data.status);
             })
             .catch(error => {
                 if (error) {
-                    setErrorMessageSaveStudentLocationService('SaveStudentLocationService: ' + error)
+                    setErrorMessageSaveStudentLocations('SaveStudentLocations: ' + error)
                 } else {
-                    setErrorMessageSaveStudentLocationService('SaveStudentLocationService: ' + data.status)
+                    setErrorMessageSaveStudentLocations('SaveStudentLocations: ' + data.status)
                 }
              }
              );
     }, []);
     //
-    // *** SAVE STUDENT SERVICE OPPORTUNITIES ***
+    // *** SAVE STUDENT AVAILABILITIES ***
     // 
     useEffect(() => {
         const credentials = getCredentials()
-        const studentServiceOpportunities = {}
-        const centersOpportunities = Object.entries(getCenterOpportunities())
-        centersOpportunities.map((centerOpportunities) => {
-            const studentOpportunities = Object.entries(centerOpportunities[1])
-            studentOpportunities.map((studentOpportunity) => {
-                studentServiceOpportunities[studentOpportunity[0]] = {}
-                studentServiceOpportunities[studentOpportunity[0]].OpportunityId = studentOpportunity[0]
-                studentServiceOpportunities[studentOpportunity[0]].StudentId = getCredentials().studentId
-                studentServiceOpportunities[studentOpportunity[0]].ApplicationDate = studentOpportunity[1].ApplicationDate
-                studentServiceOpportunities[studentOpportunity[0]].rowid = studentOpportunity[1].rowid
-            })
-        })
-        fetch(apiUrl(getDB()) + 'SaveStudentOpportunities' + 
+        fetch(apiUrl(getDB()) + 'SaveStudentAvailabilities' + 
                 '?code=' + credentials.code +
                 '&studentId=' + credentials.studentId +
-                '&studentServiceOpportunities=' + JSON.stringify(studentServiceOpportunities))
+                '&studentAvailabilities=' + JSON.stringify(getStudentAvailabilities()))
             .then(async response => {
                 const data = await response.json()
                 // check for error response
@@ -71,18 +60,17 @@ const SaveAllToDR = ({props}) => {
                     const error = (data && data.status) || response.status;
                     return Promise.reject(error);
                 }
-                setErrorMessageSaveStudentServiceOpportunities('SaveStudentServiceOpportunities: ' + data.status);
+                setErrorMessageSaveStudentAvailabilities('SaveStudentAvailabilities: ' + data.status);
             })
             .catch(error => {
                 if (error) {
-                    setErrorMessageSaveStudentServiceOpportunities('SaveStudentServiceOpportunities: ' + error)
+                    setErrorMessageSaveStudentAvailabilities('SaveStudentAvailabilities: ' + error)
                 } else {
-                    setErrorMessageSaveStudentServiceOpportunities('SaveStudentServiceOpportunities: ' + data.status)
+                    setErrorMessageSaveStudentAvailabilities('SaveStudentAvailabilities: ' + data.status)
                 }
              }
              );
     }, []);
-
     //
     // *** SAVE STUDENT SKILLS ***
     // 
@@ -128,14 +116,14 @@ const SaveAllToDR = ({props}) => {
     let messageError1 = ''
     let messageError2 = ''
     let messageError3 = ''
-    if (!errorMessageSaveStudentLocationService 
-        || !errorMessageSaveStudentServiceOpportunities
+    if (!errorMessageSaveStudentLocations 
+        || !errorMessageSaveStudentAvailabilities
         || !errorMessageSaveStudentSkills) {
-        message = T.Saving
-    } else if(errorMessageSaveStudentLocationService.endsWith('Success') &&
-            errorMessageSaveStudentServiceOpportunities.endsWith('Success') &&
-            errorMessageSaveStudentSkills.endsWith('Success')) {
-        message = T.Success
+                message = T.Saving
+    } else if(errorMessageSaveStudentLocations.endsWith('Success') &&
+        errorMessageSaveStudentAvailabilities.endsWith('Success') &&
+        errorMessageSaveStudentSkills.endsWith('Success')) {
+            message = T.Success
         if (props.currentTab === "saveAndExit"){logout()}
         setTimeout(() => {
             setFade(false)
@@ -145,8 +133,8 @@ const SaveAllToDR = ({props}) => {
         props.setFileMenuColor(getWasModifiedColor())
     } else {
         message = T.Error
-        messageError1 = '\n' + errorMessageSaveStudentLocationService
-        messageError2 = '\n' + errorMessageSaveStudentServiceOpportunities
+        messageError1 = '\n' + errorMessageSaveStudentLocations
+        messageError2 = '\n' + errorMessageSaveStudentAvailabilities
         messageError3 = '\n' + errorMessageSaveStudentSkills
     }
     return (

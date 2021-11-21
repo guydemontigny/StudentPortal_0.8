@@ -3,7 +3,7 @@ import CentersList from '../../components/CentersList'
 import Availability from '../../components/Availability'
 import Skills from '../../components/Skills'
 import {getCredentials, saveCredentials, saveDB, saveLocale, saveStudent, saveSkills, getCurrentTab, saveCurrentTab, 
-    saveCenterOpportunities, getLocation, saveLocation, saveWasModified, saveStudentAvailability, getWasModifiedColor} from '../../libs/sessionStorage'
+    saveLocations, saveWasModified, saveStudentAvailabilities, getWasModifiedColor} from '../../libs/sessionStorage'
 import Login from '../../components/Login'
 import {apiUrl} from '../../appConfigs/config'
 import useSWR from "swr";
@@ -21,7 +21,6 @@ export default function App(props) {
     const [currentTab, setCurrentTab] = useState(getCurrentTab())
     const [expanded, setExpanded] = useState(false)
     const [fileMenuColor, setFileMenuColor] = useState(getWasModifiedColor())
-    const [center, setCenter] = useState(getLocation())
 
     useEffect(() => {
         showPortalSpinner(false)
@@ -60,9 +59,8 @@ export default function App(props) {
                 // If, before the read, the credentials were fine (credentials.error === ''), this
                 //     is a refresh. In that case, do not update data with what comes from the server.
                 if (data.student) {saveWasModified(false); saveStudent(data.student)}
-                if (data.studentAvailability) {saveStudentAvailability(data.studentAvailability)}
-                if (data.centerOpportunities) {saveCenterOpportunities(data.centerOpportunities)}
-                if (data.location) {saveLocation(data.location)}
+                if (data.studentAvailability) {saveStudentAvailabilities(data.studentAvailability)}
+                if (data.locations) {saveLocations(data.locations)}
                 if (data.skills) {saveSkills(data.skills)}
             }   
         }
@@ -144,7 +142,7 @@ export default function App(props) {
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
-                {(getCurrentTab() === 'service2centers') && <CentersList props = {{...props, center, setCenter, setFileMenuColor}}/>}
+                {(getCurrentTab() === 'service2centers') && <CentersList props = {{...props, setFileMenuColor}}/>}
                 {(getCurrentTab() === 'skills') && <Skills props = {{...props, setFileMenuColor}} />}
                 {(getCurrentTab() === 'availability') && <Availability props = {{...props, setFileMenuColor}}/>}
                 {(currentTab === 'save' || currentTab === 'saveAndExit') && <SaveAllToDR props = {{...props, setFileMenuColor, currentTab, setCurrentTab}}/>}

@@ -122,77 +122,21 @@ export function initialStudent() {
   }
 }
 //
-// The student availability table
+// The student availabilities table (clone of SQL table StudentOutreach)
 //
-export function getStudentAvailability() {
+export function getStudentAvailabilities() {
   if (typeof window !== 'undefined') {
-      const studentAvailabilityString = sessionStorage.getItem('studentAvailability')
+      const studentAvailabilityString = sessionStorage.getItem('studentAvailabilities')
       if (studentAvailabilityString) {
-          const studentAvailability = JSON.parse(studentAvailabilityString)
-          if (studentAvailability[getLocation().locationId])
-            return studentAvailability[getLocation().locationId]
+          const studentAvailabilities = JSON.parse(studentAvailabilityString)
+          return studentAvailabilities
           }
   }
-  return initialStudentAvailability()
+  return []
 }
-export function saveStudentAvailability(studentAvailability){
+export function saveStudentAvailabilities(studentAvailabilities){
   if (typeof window !== 'undefined') {
-    let studentAvailabilityTotal = {}
-    let studentAvailabilityString = sessionStorage.getItem('studentAvailability')
-    if (studentAvailabilityString) {
-      studentAvailabilityTotal = JSON.parse(studentAvailabilityString)
-    }
-    Object.entries(studentAvailability).map((locationAvailability) => {
-      studentAvailabilityTotal[locationAvailability[0]] = locationAvailability[1]
-    })
-//    sessionStorage.setItem('studentAvailability', JSON.stringify(studentAvailabilityTotal).replace(/"0"/g, '0').replace(/"1"/g, '1'))
-    sessionStorage.setItem('studentAvailability', JSON.stringify(studentAvailabilityTotal))
-  }
-}
-export function saveStudentAvailabilityField(fieldName, fieldValue){
-  if (typeof window !== 'undefined') {
-    const studentAvailability = JSON.parse(sessionStorage.getItem('studentAvailability'))
-    const currentLocation = getLocation().locationId
-    if (!studentAvailability[currentLocation]){studentAvailability[currentLocation]= initialStudentAvailability()}
-    studentAvailability[currentLocation][fieldName] = fieldValue
-    sessionStorage.setItem('studentAvailability', JSON.stringify(studentAvailability))
-  }
-}
-export function initialStudentAvailability() {
-  return {
-    StudentId : getStudent().studentId,
-    LocationId : getLocation().locationId,
-    ContactOnNewServiceOpportunity : 0,
-    OpportunityComment :"",
-    NotAvailable : 0,
-    AvailableFromHome : 0,
-    AvailableForCourses : 0,
-    AvailableForChildCourses : 0,
-    AvailableBetweenCourses : 0,
-    AvailableWorkPeriod : 0,
-    AvailableLongTerm : 0,
-    AvailableLongTermFrom : null,
-    AvailableLongTermTo : null,
-    AvailabilityComment : "", 
-    rowid : ""
-    }
-  }
-//
-// The CenterOpportunities object
-//
-export function getCenterOpportunities() {
-  if (typeof window !== 'undefined') {
-      const CenterOpportunitiesString = sessionStorage.getItem('centerOpportunities');
-      if (CenterOpportunitiesString) {
-          const CenterOpportunities = JSON.parse(CenterOpportunitiesString);
-          return CenterOpportunities
-          }
-  }
-  return null
-}
-export function saveCenterOpportunities(CenterOpportunities){
-  if (typeof window !== 'undefined') {
-    sessionStorage.setItem('centerOpportunities', JSON.stringify(CenterOpportunities))
+    sessionStorage.setItem('studentAvailabilities', JSON.stringify(studentAvailabilities))
   }
 }
 //
@@ -221,30 +165,20 @@ export function setSkillValue(categoryId, skillId, value) {
 //
 // The location object
 //
-export function getLocation() {
+export function getLocations() {
   if (typeof window !== 'undefined') {
-      const locationString = sessionStorage.getItem('location');
+      const locationString = sessionStorage.getItem('locations');
       if (locationString) {
-          const location = JSON.parse(locationString);
-          return location
+          const locations = JSON.parse(locationString);
+          return locations
           }
   }
-  return {
-    locationId:'',
-    locationDisplayName: ''
-  }
+  return []
 }
-export function saveLocation(location){
-  if (typeof window !== 'undefined') {
-    if (location.locationId) {
-      location.locationDisplayName = location.locationName + (location.dhammaName ? ', ' : '') + location.dhammaName
-    } else {
-      location.locationDisplayName = ''
-    }
-    sessionStorage.setItem('location', JSON.stringify(location))
-  }
+export function saveLocations(locations){
+    sessionStorage.setItem('locations', JSON.stringify(locations))
 }
-export function resetLocation() {
-  sessionStorage.removeItem('location')
+export function resetLocations() {
+  sessionStorage.removeItem('locations')
 }
 

@@ -1,4 +1,4 @@
-import {getLocation, saveStudentAvailabilityField, getStudentAvailability, saveWasModified, 
+import {saveStudentAvailabilities, getStudentAvailabilities, saveWasModified, 
   getWasModifiedColor} from '../libs/sessionStorage'
 import {Form} from 'react-bootstrap'
 import styles from '../styles/login.module.css'
@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css"
 
 const Availability = ({props}) => {
     const T = props.T
-    const [center, setCenter] = useState(getLocation())
     const [startDate, setStartDate] = useState()
     const [endDate, setEndDate] = useState()
     const [dateDisabled, setDateDisabled] = useState(true)
@@ -22,15 +21,15 @@ const Availability = ({props}) => {
     const [availabilityComment, setAvailabilityComment] = useState('')
 
     useEffect( () => {
-      const studentAvailability = getStudentAvailability()
-      setAvailableBetweenCourses(studentAvailability.AvailableBetweenCourses)
-      setAvailableForChildCourses(studentAvailability.AvailableForChildCourses)
-      setAvailableForCourses(studentAvailability.AvailableForCourses)
-      setAvailableLongTerm(studentAvailability.AvailableLongTerm)
-      setAvailableWorkPeriod(studentAvailability.AvailableWorkPeriod)
-      setAvailabilityComment(studentAvailability.AvailabilityComment)
+      const studentAvailability = getStudentAvailabilities()
+      setAvailableBetweenCourses(studentAvailability.SvcCenterPrep)
+      setAvailableForChildCourses(studentAvailability.ForChildrens)
+      setAvailableForCourses(studentAvailability.CourseSvcFull)
+      setAvailableLongTerm(studentAvailability.SvcLongTerm)
+      setAvailableWorkPeriod(studentAvailability.SvcPeriods)
+      setAvailabilityComment(studentAvailability.StudentRemarks)
       setNotAvailable(studentAvailability.NotAvailable)
-      setAvailableFromHome(studentAvailability.AvailableFromHome)
+      setAvailableFromHome(studentAvailability.SvcHome)
       setStartDate(studentAvailability.AvailableLongTermFrom)
       setEndDate(studentAvailability.AvailableLongTermTo)
     }) 
@@ -38,7 +37,7 @@ const Availability = ({props}) => {
       setDateDisabled(!e.target.checked)
       setStartDate(null)
       setEndDate(null)
-      saveStudentAvailabilityField("AvailableLongTerm", e.target.checked? 1 : 0)
+      saveStudentAvailabilityField("SvcLongTerm", e.target.checked? 1 : 0)
       setAvailableLongTerm(!e.target.checked)
       saveStudentAvailabilityField("AvailableLongTermFrom",null)
       saveStudentAvailabilityField("AvailableLongTermTo",null)
@@ -48,18 +47,19 @@ const Availability = ({props}) => {
     function notAvailableChange(e) {
       setNotAvailable(!e.target.checked)
       saveStudentAvailabilityField("NotAvailable", e.target.checked? 1 : 0)    }
-    function processStudentAvailabilityField(fieldName, value) {
-        saveStudentAvailabilityField(fieldName, value)
-        saveWasModified(true)
-        props.setFileMenuColor(getWasModifiedColor())
+    function saveStudentAvailabilityField(fieldName, value) {
+      const availabilities = getStudentAvailabilities()
+      availabilities[fieldName] = value
+      saveStudentAvailabilities(availabilities)
+      saveWasModified(true)
+      props.setFileMenuColor(getWasModifiedColor())
     }
 
     // The availability section is shown only if a valid center is selected
 
     return(
         <div>
-          {center.locationId && 
-            <>
+          {<>
             <Form.Group  className={styles.body} controlId="not-available" >
               <Form.Check type="checkbox" label={T.NotAvailable} 
                 checked = {notAvailable == 1}
@@ -70,7 +70,7 @@ const Availability = ({props}) => {
                 <Form.Check type="checkbox" label={T.WorkFromHome} 
                   checked = {availableFromHome == 1}
                   disabled = {notAvailable == 1}
-                  onChange = {(e)=>{processStudentAvailabilityField("AvailableFromHome", e.target.checked? 1 : 0)
+                  onChange = {(e)=>{saveStudentAvailabilityField("SvcHome", e.target.checked? 1 : 0)
                                     setAvailableFromHome(!e.target.checked)}}/>
                 <br/>
               </Form.Group>
@@ -79,30 +79,30 @@ const Availability = ({props}) => {
               </Form.Group>
               <Form.Group  className={styles.body} controlId="work-courses">
                 <Form.Check className={styles.indented} type="checkbox" label={T.Courses}
-                  checked = {availableForCourses == 1} 
+                  checked = {availableForCourses} 
                   disabled = {notAvailable == 1}
-                  onChange = {(e)=>{processStudentAvailabilityField("AvailableForCourses", e.target.checked? 1 : 0)
+                  onChange = {(e)=>{saveStudentAvailabilityField("CourseSvcFull", e.target.checked? 1 : 0)
                                     setAvailableForCourses(!e.target.checked)}} />
                 </Form.Group>
               <Form.Group  className={styles.body} controlId="work-child-courses">
                 <Form.Check className={styles.indented} type="checkbox" label={T.ChildCourses}
                   checked = {availableForChildCourses == 1}
                   disabled = {notAvailable == 1}
-                  onChange = {(e)=>{processStudentAvailabilityField("AvailableForChildCourses", e.target.checked? 1 : 0)
+                  onChange = {(e)=>{saveStudentAvailabilityField("ForChildrens", e.target.checked? 1 : 0)
                                     setAvailableForChildCourses(!e.target.checked)}} />
                 </Form.Group>
               <Form.Group  className={styles.body} controlId="work-betwwen">
                 <Form.Check className={styles.indented} type="checkbox" label={T.BetweenCourses}
                   checked = {availableBetweenCourses == 1}
                   disabled = {notAvailable == 1}
-                  onChange = {(e)=>{processStudentAvailabilityField("AvailableBetweenCourses", e.target.checked? 1 : 0)
+                  onChange = {(e)=>{saveStudentAvailabilityField("SvcCenterPrep", e.target.checked? 1 : 0)
                                     setAvailableBetweenCourses(!e.target.checked)}} />
                 </Form.Group>
               <Form.Group  className={styles.body} controlId="work-period">
                 <Form.Check className={styles.indented} type="checkbox" label={T.WorkingPeriod}
                   checked = {availableWorkPeriod == 1}
                   disabled = {notAvailable == 1}
-                  onChange = {(e)=>{processStudentAvailabilityField("AvailableWorkPeriod", e.target.checked? 1 : 0)
+                  onChange = {(e)=>{saveStudentAvailabilityField("SvcPeriods", e.target.checked? 1 : 0)
                                     setAvailableWorkPeriod(!e.target.checked)}} />
                 </Form.Group>
               <Form inline>
@@ -117,7 +117,7 @@ const Availability = ({props}) => {
                     dateFormat = 'yyyy-MM-dd'
                     selected={startDate ? new Date(startDate) : null}
                     disabled = {dateDisabled}
-                    onChange={date => {setStartDate(date); processStudentAvailabilityField("AvailableLongTermFrom", date)}}
+                    onChange={date => {setStartDate(date); saveStudentAvailabilityField("AvailableLongTermFrom", date)}}
                     isClearable
                     placeholderText = {T.EnterStartDate}
                     minDate = {new Date()}
@@ -127,7 +127,7 @@ const Availability = ({props}) => {
                     dateFormat = 'yyyy-MM-dd'
                     selected={endDate? new Date(endDate): null}
                     disabled = {dateDisabled}
-                    onChange={date => {setEndDate(date); processStudentAvailabilityField("AvailableLongTermTo", date)}}
+                    onChange={date => {setEndDate(date); saveStudentAvailabilityField("AvailableLongTermTo", date)}}
                     isClearable
                     placeholderText = {T.EnterEndDate}
                     minDate = {startDate}
@@ -139,7 +139,7 @@ const Availability = ({props}) => {
                   <Form.Label >{T.Comment}</Form.Label>
                   <Form.Control as="textarea" rows={5}
                       id = "availability-comment-id"
-                      onChange = {(e)=>{setAvailabilityComment(e.target.value); processStudentAvailabilityField("AvailabilityComment", e.target.value)}}
+                      onChange = {(e)=>{setAvailabilityComment(e.target.value); saveStudentAvailabilityField("StudentRemarks", e.target.value)}}
                       value = {availabilityComment}/>
               </Form.Group>
             </>}
