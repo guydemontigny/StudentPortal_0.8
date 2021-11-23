@@ -1,5 +1,6 @@
 import {Accordion, Card, Button, ToggleButtonGroup, ToggleButton} from 'react-bootstrap'
-import {getSkills, getStudent, setSkillValue, saveWasModified, getWasModifiedColor} from '../libs/sessionStorage'
+import {getSkills, getStudent, setSkillValue, saveWasModified, 
+  getWasModifiedColor} from '../libs/sessionStorage'
 import PortalSpinner from './PortalSpinner'
 
 const Skills = ({props}) => {

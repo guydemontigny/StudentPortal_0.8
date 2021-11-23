@@ -1,7 +1,8 @@
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 import Select from 'react-select'
 import Center from 'react-center'
-import {getLocations, saveLocations, getStudent} from '../libs/sessionStorage' 
+import {getLocations, saveLocations, getStudent, 
+  getWasModifiedColor, saveWasModified} from '../libs/sessionStorage' 
 import styles from '../styles/login.module.css'
 import { ButtonGroup } from 'react-bootstrap'
 import React, { useState } from 'react';
@@ -17,15 +18,17 @@ const CentersList = ({props})=> {
       <p>&nbsp;<ButtonGroup>
         <button className={styles.deletebutton} 
           onClick={() => {
-            var newSelectedCenters = []
             for (var j=0; j<selectedCenters.length; j++) {
-              if (selectedCenters[j].locationId !== selectedCenter.locationId){
-                newSelectedCenters.push(selectedCenters[j])
+              if (selectedCenters[j].locationId === selectedCenter.locationId){
+                selectedCenters.splice(j,1)
               }
             }
-            setSelectedCenters(newSelectedCenters)
-            saveLocations(newSelectedCenters)}
-          }
+            saveWasModified(true)
+            props.setFileMenuColor(getWasModifiedColor())
+            setSelectedCenters(selectedCenters)
+            saveLocations(selectedCenters)
+            if (!selectedCenters.length){props.setShowTabs(false)}
+          }}
         >X</button>
         &nbsp;&nbsp;
         <div>
@@ -84,7 +87,10 @@ const CentersList = ({props})=> {
           const newSelectedCenters = selectedCenters.concat(location)
           setSelectedCenters(newSelectedCenters)
           saveLocations(newSelectedCenters)
-      }
+          saveWasModified(true)
+          props.setFileMenuColor(getWasModifiedColor())
+          props.setShowTabs(true)
+        }
     }) 
   }
 
@@ -98,10 +104,8 @@ const CentersList = ({props})=> {
   }
 
   return (
-    <Center>
     <form className={styles.center}>
       {welcome()}
-      <br/>
       <br/>
       <Select options={centerList}
               onChange = {(e)=>handleCenterChange(e)} 
@@ -116,9 +120,6 @@ const CentersList = ({props})=> {
         {selectedCentersItem}
       </ButtonGroup>
     </form>
-    </Center>
-
-
   )
 }
 

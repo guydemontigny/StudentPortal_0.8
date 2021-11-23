@@ -20,7 +20,7 @@ export function getCredentials() {
       cellPhone: '',
       studentId: '',
       code: '',
-      error: 'ERR000'
+      error: 'ERR000',
     }
   }
   export function resetCredentials(credentials) {
@@ -42,12 +42,12 @@ export function getCurrentTab(){
   if (typeof window !== 'undefined') {
     const currentTab = sessionStorage.getItem('currentTab')
     if (!currentTab) {
-      return 'skills'
+      return 'service2centers'
     } else {
       return currentTab
     }
   } else {
-    return 'skills'
+    return 'service2centers'
   }
 }
 //

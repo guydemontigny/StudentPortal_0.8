@@ -1,31 +1,30 @@
 import {getCredentials, saveCredentials, initialCredentials } from './sessionStorage'
 import {apiUrl} from '../appConfigs/config'
 
-export function flushDRCode(){
-    const studentId = getCredentials().studentId
-    fetch(`${apiUrl}DrLogout?studentId=${studentId}`)
-    }
+function flushDRCode(studentId){
+    fetch(`${apiUrl()}DrLogout?studentId=${studentId}`)
+}
 
 export function resendDRCode(){
     const credentials = getCredentials()
     credentials.code = "resend"
     saveCredentials(credentials)
-    const studentId = credentials.studentId
-    fetch(`${apiUrl}DrLogout?studentId=${studentId}`)
-    }
+    flushDRCode(credentials.studentId)
+    window.location.reload(false)
+}
     
 export function logout(){
-    flushDRCode()
     if (typeof window !== 'undefined') {
+        const studentId = getCredentials().studentId
         const credentials = initialCredentials()
         credentials.error = "ERR020 Logout"
         saveCredentials(credentials)
-        sessionStorage.removeItem ('location')
+        sessionStorage.removeItem ('locations')
         sessionStorage.removeItem ('skills')
-        sessionStorage.removeItem ('centerOpportunities')
-        sessionStorage.removeItem ('studentAvailability')
+        sessionStorage.removeItem ('studentAvailabilities')
         sessionStorage.removeItem ('student')
         sessionStorage.removeItem ('currentTab')
+        flushDRCode(studentId)
         window.location.reload(false)
     }
 }

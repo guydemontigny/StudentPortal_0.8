@@ -4,14 +4,15 @@
 .title {
   color: black;
   text-align: center;
-  border: 5px solid lightgray;
+  border: 2px solid lightgray;
   border-radius: 10px;
   margin: 20px 0px 20px;
 }
 .center {
   color: black;
   text-align: center;
-  width: 400px;
+  width: 438px;
+  margin-left: 15px;
 }
 .spinner {
   position: fixed;
@@ -21,6 +22,7 @@
   position: fixed;
   top: 200px;
   background-color: cornflowerblue;
+  border-radius: 10px;
 }
 .error {
   color:red;

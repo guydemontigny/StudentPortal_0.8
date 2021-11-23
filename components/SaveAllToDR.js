@@ -124,13 +124,16 @@ const SaveAllToDR = ({props}) => {
         errorMessageSaveStudentAvailabilities.endsWith('Success') &&
         errorMessageSaveStudentSkills.endsWith('Success')) {
             message = T.Success
-        if (props.currentTab === "saveAndExit"){logout()}
-        setTimeout(() => {
-            setFade(false)
-            props.setCurrentTab(getCurrentTab())
-        }, 1000 )
-        saveWasModified(false)
-        props.setFileMenuColor(getWasModifiedColor())
+        if (props.currentTab === "saveAndExit"){
+            logout()
+        } else {
+            setTimeout(() => {
+                setFade(false)
+                props.setCurrentTab(getCurrentTab())
+            }, 1000 )
+            saveWasModified(false)
+            props.setFileMenuColor(getWasModifiedColor())
+        }
     } else {
         message = T.Error
         messageError1 = '\n' + errorMessageSaveStudentLocations
@@ -141,7 +144,7 @@ const SaveAllToDR = ({props}) => {
       <Center>
         <Fade when={fade}>
             <div className = {styles.saving}>
-                <div className="card text-center m-3">
+                <div className="card text-center m-1">
                     <div className="card-body">
                     <p>{message}</p>
                     <p>{messageError1}</p>

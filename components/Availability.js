@@ -1,5 +1,5 @@
 import {saveStudentAvailabilities, getStudentAvailabilities, saveWasModified, 
-  getWasModifiedColor} from '../libs/sessionStorage'
+  getWasModifiedColor, getStudent} from '../libs/sessionStorage'
 import {Form} from 'react-bootstrap'
 import styles from '../styles/login.module.css'
 import {useState, useEffect} from 'react'
@@ -8,6 +8,9 @@ import "react-datepicker/dist/react-datepicker.css"
 
 const Availability = ({props}) => {
     const T = props.T
+    const [byEmail, setByEmail] = useState(false)
+    const [byPhone, setByPhone] = useState(false)
+    const [bySMS, setBySMS] = useState(false)
     const [startDate, setStartDate] = useState()
     const [endDate, setEndDate] = useState()
     const [dateDisabled, setDateDisabled] = useState(true)
@@ -22,6 +25,9 @@ const Availability = ({props}) => {
 
     useEffect( () => {
       const studentAvailability = getStudentAvailabilities()
+      setByEmail(studentAvailability.ByEmail)
+      setByPhone(studentAvailability.ByPhone)
+      setBySMS(studentAvailability.BySMS)
       setAvailableBetweenCourses(studentAvailability.SvcCenterPrep)
       setAvailableForChildCourses(studentAvailability.ForChildrens)
       setAvailableForCourses(studentAvailability.CourseSvcFull)
@@ -60,13 +66,37 @@ const Availability = ({props}) => {
     return(
         <div>
           {<>
+            <br/><div className="ml-4 font-weight-bold">{T.AvailabilityOf}{' '}{getStudent().firstName}{' '}{getStudent().lastName}</div><br/>
             <Form.Group  className={styles.body} controlId="not-available" >
+              <Form.Label size="lg">{T.NotAvailableLabel}</Form.Label>
               <Form.Check type="checkbox" label={T.NotAvailable} 
                 checked = {notAvailable == 1}
                 onChange = {(e)=>notAvailableChange(e)} />
             </Form.Group>
             <br/>
+            <Form.Group  className={styles.body} controlId="contact-by-label">
+                <Form.Label size="lg">{T.ContactBy}</Form.Label>
+              </Form.Group>
+            <Form.Group  className={styles.body} controlId="contact-by">
+              <Form.Check type="checkbox" label={T.ByEmail} 
+                checked = {byEmail == 1}
+                disabled = {notAvailable == 1}
+                onChange = {(e)=>{saveStudentAvailabilityField("ByEmail", e.target.checked? 1 : 0)
+                                  setByEmail(!e.target.checked)}}/>
+              <Form.Check type="checkbox" label={T.ByPhone} 
+                checked = {byPhone == 1}
+                disabled = {notAvailable == 1}
+                onChange = {(e)=>{saveStudentAvailabilityField("ByPhone", e.target.checked? 1 : 0)
+                                  setByPhone(!e.target.checked)}}/>
+              <Form.Check type="checkbox" label={T.BySMS} 
+                checked = {bySMS == 1}
+                disabled = {notAvailable == 1}
+                onChange = {(e)=>{saveStudentAvailabilityField("BySMS", e.target.checked? 1 : 0)
+                                  setBySMS(!e.target.checked)}}/>
+            </Form.Group>
+            <br/>
               <Form.Group  className={styles.body} controlId="work-home">
+                <Form.Label size="lg">{T.WorkFromHomeLabel}</Form.Label>
                 <Form.Check type="checkbox" label={T.WorkFromHome} 
                   checked = {availableFromHome == 1}
                   disabled = {notAvailable == 1}
@@ -78,28 +108,28 @@ const Availability = ({props}) => {
                 <Form.Label size="lg">{T.WorkOnSite}</Form.Label>
               </Form.Group>
               <Form.Group  className={styles.body} controlId="work-courses">
-                <Form.Check className={styles.indented} type="checkbox" label={T.Courses}
+                <Form.Check type="checkbox" label={T.Courses}
                   checked = {availableForCourses} 
                   disabled = {notAvailable == 1}
                   onChange = {(e)=>{saveStudentAvailabilityField("CourseSvcFull", e.target.checked? 1 : 0)
                                     setAvailableForCourses(!e.target.checked)}} />
                 </Form.Group>
-              <Form.Group  className={styles.body} controlId="work-child-courses">
-                <Form.Check className={styles.indented} type="checkbox" label={T.ChildCourses}
+              <Form.Group  className={styles.body}  controlId="work-child-courses">
+                <Form.Check type="checkbox" label={T.ChildCourses}
                   checked = {availableForChildCourses == 1}
                   disabled = {notAvailable == 1}
                   onChange = {(e)=>{saveStudentAvailabilityField("ForChildrens", e.target.checked? 1 : 0)
                                     setAvailableForChildCourses(!e.target.checked)}} />
                 </Form.Group>
               <Form.Group  className={styles.body} controlId="work-betwwen">
-                <Form.Check className={styles.indented} type="checkbox" label={T.BetweenCourses}
+                <Form.Check  type="checkbox" label={T.BetweenCourses}
                   checked = {availableBetweenCourses == 1}
                   disabled = {notAvailable == 1}
                   onChange = {(e)=>{saveStudentAvailabilityField("SvcCenterPrep", e.target.checked? 1 : 0)
                                     setAvailableBetweenCourses(!e.target.checked)}} />
                 </Form.Group>
               <Form.Group  className={styles.body} controlId="work-period">
-                <Form.Check className={styles.indented} type="checkbox" label={T.WorkingPeriod}
+                <Form.Check  type="checkbox" label={T.WorkingPeriod}
                   checked = {availableWorkPeriod == 1}
                   disabled = {notAvailable == 1}
                   onChange = {(e)=>{saveStudentAvailabilityField("SvcPeriods", e.target.checked? 1 : 0)
@@ -107,7 +137,7 @@ const Availability = ({props}) => {
                 </Form.Group>
               <Form inline>
                 <Form.Group  className={styles.body} controlId="work-long-term">
-                  <Form.Check className={styles.indented} type="checkbox" label={T.LongTerm}
+                  <Form.Check  type="checkbox" label={T.LongTerm}
                     checked = {availableLongTerm == 1}
                     onChange = {(e)=>longTermChange(e)} 
                     disabled = {notAvailable == 1} />

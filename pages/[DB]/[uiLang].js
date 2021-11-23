@@ -3,7 +3,7 @@ import CentersList from '../../components/CentersList'
 import Availability from '../../components/Availability'
 import Skills from '../../components/Skills'
 import {getCredentials, saveCredentials, saveDB, saveLocale, saveStudent, saveSkills, getCurrentTab, saveCurrentTab, 
-    saveLocations, saveWasModified, saveStudentAvailabilities, getWasModifiedColor} from '../../libs/sessionStorage'
+    saveLocations, saveWasModified, saveStudentAvailabilities, getWasModifiedColor, getLocations} from '../../libs/sessionStorage'
 import Login from '../../components/Login'
 import {apiUrl} from '../../appConfigs/config'
 import useSWR from "swr";
@@ -21,6 +21,7 @@ export default function App(props) {
     const [currentTab, setCurrentTab] = useState(getCurrentTab())
     const [expanded, setExpanded] = useState(false)
     const [fileMenuColor, setFileMenuColor] = useState(getWasModifiedColor())
+    const [showTabs, setShowTabs] = useState(getLocations.length > 0)
 
     useEffect(() => {
         showPortalSpinner(false)
@@ -122,27 +123,29 @@ export default function App(props) {
                                 }}>
                             {T.Service2centers
                             }</Nav.Link>
-                        <Nav.Link href="" active={getCurrentTab() === 'skills'}
+                        {(showTabs || (getLocations().length >0)) && 
+                          <Nav.Link href="" active={getCurrentTab() === 'skills'}
                             onClick={() => {
                                 setExpanded(false)
                                 setCurrentTab("skills")
                                 saveCurrentTab("skills")
                                 }}>
                             {T.Skills}
-                            </Nav.Link>
-                        <Nav.Link href="" active={getCurrentTab() === 'availability'} 
+                            </Nav.Link>}
+                        {(showTabs || (getLocations().length >0)) && 
+                            <Nav.Link href="" active={getCurrentTab() === 'availability'} 
                             onClick={() => {
                                 setExpanded(false)
                                 setCurrentTab("availability")
                                 saveCurrentTab("availability")
                                 }}>
                             {T.Availability}
-                            </Nav.Link>
+                            </Nav.Link>}
                         <LanguageNavDropDown props = {props}/>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
-                {(getCurrentTab() === 'service2centers') && <CentersList props = {{...props, setFileMenuColor}}/>}
+                {(getCurrentTab() === 'service2centers') && <CentersList props = {{...props, setFileMenuColor, showTabs, setShowTabs}}/>}
                 {(getCurrentTab() === 'skills') && <Skills props = {{...props, setFileMenuColor}} />}
                 {(getCurrentTab() === 'availability') && <Availability props = {{...props, setFileMenuColor}}/>}
                 {(currentTab === 'save' || currentTab === 'saveAndExit') && <SaveAllToDR props = {{...props, setFileMenuColor, currentTab, setCurrentTab}}/>}
