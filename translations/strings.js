@@ -53,6 +53,8 @@ const T = {
   To: 'to',
   TypeToSearch: 'Type to search...',
   Saving: 'Saving...',
+  ShortNoticeLabel: 'If you are available with short notice, check below:',
+  ShortNotice: 'Short notice',
   Skills: 'Skills',
   StudentPortalHead: 'Vipassana Student Portal',
   Submit: 'Submit',

@@ -22,6 +22,7 @@ const Availability = ({props}) => {
     const [availableLongTerm, setAvailableLongTerm] = useState(false)
     const [availableWorkPeriod, setAvailableWorkPeriod] = useState(false)
     const [availabilityComment, setAvailabilityComment] = useState('')
+    const [shortNotice, setShortNotice] = useState(false) 
 
     useEffect( () => {
       const studentAvailability = getStudentAvailabilities()
@@ -38,6 +39,7 @@ const Availability = ({props}) => {
       setAvailableFromHome(studentAvailability.SvcHome)
       setStartDate(studentAvailability.AvailableLongTermFrom)
       setEndDate(studentAvailability.AvailableLongTermTo)
+      setShortNotice(studentAvailability.AvailShortNotice)
     }) 
     function longTermChange(e) {
       setDateDisabled(!e.target.checked)
@@ -95,6 +97,15 @@ const Availability = ({props}) => {
                                   setBySMS(!e.target.checked)}}/>
             </Form.Group>
             <br/>
+            <Form.Group  className={styles.body} controlId="short-notice">
+                <Form.Label size="lg">{T.ShortNoticeLabel}</Form.Label>
+                <Form.Check type="checkbox" label={T.ShortNotice} 
+                  checked = {shortNotice == 1}
+                  disabled = {notAvailable == 1}
+                  onChange = {(e)=>{saveStudentAvailabilityField("AvailShortNotice", e.target.checked? 1 : 0)
+                                    setShortNotice(!e.target.checked)}}/>
+                <br/>
+              </Form.Group>
               <Form.Group  className={styles.body} controlId="work-home">
                 <Form.Label size="lg">{T.WorkFromHomeLabel}</Form.Label>
                 <Form.Check type="checkbox" label={T.WorkFromHome} 
