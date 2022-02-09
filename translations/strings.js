@@ -25,6 +25,7 @@ const T = {
   ERR003: 'Duplicates found with this email or phone number',
   ERR010: 'Please enter code.', 
   ERR011: 'this code is not valid... Try again.', 
+  ERR012: "this code has expired... Click on 'Resend code' to get a new code.", 
   Experienced: 'Experienced',
   Error: 'The save failed with the following error:',
   File: 'File',

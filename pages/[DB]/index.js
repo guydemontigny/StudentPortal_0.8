@@ -11,6 +11,10 @@ const Index = (props) => {
   return (
     <Head>
       <meta name="robots" content="noindex, nofollow" />
+      <meta name="theme-color" content="#90cdf4" />
+      <meta charset='utf-8' />
+      <title>Vipassana Old Students Portal</title>
+      <link href='/img/Hamburger_icon.png' rel='icon' type='image/png' sizes='32x32' />
     </Head>
   )
 }

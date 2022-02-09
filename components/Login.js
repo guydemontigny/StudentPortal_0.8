@@ -126,7 +126,7 @@ function Login({props}) {
     const credentialsReturned = getCredentials()
     const errorCode = credentialsReturned.error.split(' ')[0]
     let errorMessage = T[errorCode]
-    if (errorCode === "ERR011") {errorMessage = credentialsReturned.code + ': ' + errorMessage}
+    if ((errorCode === "ERR011") || (errorCode === "ERR012")) {errorMessage = credentialsReturned.code + ': ' + errorMessage}
     if (credentialsReturned.code === "resent"){ errorMessage = T.ResentCode}
     //credentialsReturned.error = "ERR011 Code is not valid"
     saveCredentials(credentialsReturned);
